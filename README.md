@@ -1,7 +1,7 @@
 ansible-role-mongodb
 ====================
 
-[![Build Status](https://travis-ci.org/lesmyrmidons/ansible-role-mongodb.svg?branch=master)](https://travis-ci.org/lesmyrmidons/ansible-role-mongodb)
+[![Build Status](https://travis-ci.org/danvaida/ansible-role-mongodb.svg?branch=master)](https://travis-ci.org/danvaida/ansible-role-mongodb)
 
 Ansible Role - Mongodb on RHEL/CentOS and Debian/Ubuntu.
 
