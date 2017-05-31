@@ -5,14 +5,14 @@
 
 - name: Debian | Add repo key
   apt_key:
-    url: "{{ url_apt_key }}0x{{ id_apt_key }}"
-    id: "{{ id_apt_key }}"
+    url: "{{ mongodb_url_apt_key }}0x{{ mongodb_id_apt_key }}"
+    id: "{{ mongodb_id_apt_key }}"
   when: ansible_distribution == 'Debian'
 
 - name: Ubuntu | Add repo key
   apt_key:
-    keyserver: "{{ url_apt_key }}"
-    id: "{{ id_apt_key }}"
+    keyserver: "{{ mongodb_url_apt_key }}"
+    id: "{{ mongodb_id_apt_key }}"
   when: ansible_distribution == 'Ubuntu'
 
 - name: Debian | Add repo
@@ -25,3 +25,4 @@
     name: "{{ item }}"
     state: present
   with_items: "{{ mongodb_packages }}"
+  notify: restart mongod

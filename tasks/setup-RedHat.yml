@@ -1,10 +1,4 @@
 ---
-- name: RedHat | Install packages dependencies
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ mongodb_packages_dependencies | default([]) }}"
-
 - name: RedHat | Add repo
   yum_repository:
     name: "mongodb-org-{{ mongodb_version }}"
@@ -18,3 +12,4 @@
     name: "{{ item }}"
     state: present
   with_items: "{{ mongodb_packages }}"
+  notify: restart mongod

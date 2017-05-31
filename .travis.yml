@@ -1,36 +1,34 @@
 ---
-language: python
-python: "2.7"
+branches:
+  only:
+    - master
+
+services:
+  - docker
 
 env:
-  - SITE=test.yml
+  - distro: wheezy
+    init: ""
+    run_opts: ""
+  - distro: jessie
+    init: ""
+    run_opts: ""
+  - distro: centos7
+    init: /usr/sbin/init
+    run_opts: "--privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro"
 
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y curl
-
-install:
-  - pip install ansible==2.2
-
-  # Add ansible.cfg to pick up roles path.
-  - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
+before_script:
+  - >
+    docker build --pull --no-cache -t ansible-roles-test-${distro}
+    -f tests/support/${distro}.Dockerfile tests/support
 
 script:
-  # Check the role/playbook's syntax.
-  - "ansible-playbook -i tests/inventory tests/$SITE --syntax-check"
-
-  # Run the role/playbook with ansible-playbook.
-  - "ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo"
-
-  # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
-
-  # Issue a request to make sure MongoDB is running.
-  - "curl http://localhost:27017/"
-
-notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+    docker run -d -it ${run_opts} --name ${distro}
+    -v $PWD:/etc/ansible/roles/mongodb
+    --workdir /etc/ansible/roles/mongodb/tests
+    ansible-roles-test-${distro} ${init}
+  - DOCKER_CONTAINER_ID=$(docker ps --filter name=${distro} -q)
+  - >
+    docker exec -it $DOCKER_CONTAINER_ID
+    /bin/bash -xec "bash -x support/run-tests.sh"
