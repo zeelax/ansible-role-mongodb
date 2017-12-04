@@ -1,9 +1,6 @@
 ---
 # This role deploys the mongodb processes and sets up settings.
 
-- name: Include OS-specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
-
 - name: Include OS-specific variables defaults
   include_vars:
     file: "defaults/{{ ansible_os_family }}.yml"

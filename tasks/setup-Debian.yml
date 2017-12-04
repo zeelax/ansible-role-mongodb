@@ -1,29 +1,22 @@
 ---
 - name: Include distribution-specific variables.
   include_vars: "{{ ansible_distribution }}.yml"
-  when: ansible_distribution == 'Ubuntu'
 
-- name: Debian | Add repo key
-  apt_key:
-    url: "{{ mongodb_url_apt_key }}0x{{ mongodb_id_apt_key }}"
-    id: "{{ mongodb_id_apt_key }}"
-  when: ansible_distribution == 'Debian'
-
-- name: Ubuntu | Add repo key
+- name: Add repo key
   apt_key:
     keyserver: "{{ mongodb_url_apt_key }}"
     id: "{{ mongodb_id_apt_key }}"
-  when: ansible_distribution == 'Ubuntu'
 
-- name: Debian | Add repo
+- name: Add repo
   apt_repository:
     repo: "{{ mongodb_repository }}"
-    update_cache: True
+    update_cache: yes
 
-- name: Debian | Install Packages
+- name: Install Packages
   apt:
     name: "{{ item }}"
     state: present
   with_items: "{{ mongodb_packages }}"
-  notify: restart mongod
-  notify: enable mongod
+  notify:
+  - restart mongod
+  - enable mongod
