@@ -1,3 +1,6 @@
 ---
-mongodb_url_apt_key: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search='
-mongodb_repository:  'deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen'
+mongodb_packages_dependencies:
+  - adduser
+
+mongodb_id_apt_key: 0C49F3730359A14518585931BC711F9BA15703C6
+mongodb_url_apt_key: 'keyserver.ubuntu.com'
